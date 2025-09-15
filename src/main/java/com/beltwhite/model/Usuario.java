@@ -1,6 +1,7 @@
 package com.beltwhite.model;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.annotations.ManyToAny;
 
@@ -16,8 +17,9 @@ import jakarta.persistence.Table;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @Column(columnDefinition = "UUID")
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -43,7 +45,7 @@ public class Usuario {
         this.roles = roles;
     }
 
-    public Usuario(Long id, String email, String nome, String senha, List<Role> roles) {
+    public Usuario(UUID id, String email, String nome, String senha, List<Role> roles) {
         this.id = id;
         this.email = email;
         this.nome = nome;
@@ -51,11 +53,11 @@ public class Usuario {
         this.roles = roles;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

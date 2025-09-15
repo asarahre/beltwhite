@@ -17,7 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.beltwhite.config.TestDataSourceConfig;
 import com.beltwhite.model.Role;
+import com.beltwhite.model.RoleName;
 import com.beltwhite.model.Usuario;
+import com.beltwhite.repository.RoleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
@@ -32,11 +34,19 @@ class AuthControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private RoleRepository roleRepository; // ✅ aqui está o import correto
+
     @Test
     void deveRegistrarUsuarioComSucesso() throws Exception {
-        List<Role> roles = new ArrayList<>();
+        // 1️⃣ Pega a role existente no banco
+        Role adminRole = roleRepository.findByNome(RoleName.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Role ADMIN não encontrada"));
 
-        roles.add(new Role(1, null));
+        // 2️⃣ Cria lista de roles com a role existente
+        List<Role> roles = new ArrayList<>();
+        roles.add(adminRole);
+
         Usuario usuario = new Usuario("sarah1222@test.com", "Sarah", "123456", roles);
 
         mockMvc.perform(post("/auth/register")
@@ -45,4 +55,5 @@ class AuthControllerTest {
                 .andExpect(status().isCreated()) // ou CREATED se vc definiu assim
         ;
     }
+
 }
