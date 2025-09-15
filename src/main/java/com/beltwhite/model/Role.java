@@ -1,9 +1,13 @@
 package com.beltwhite.model;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -12,38 +16,40 @@ import jakarta.persistence.Table;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue
+    @Column(columnDefinition = "UUID")
+    private UUID id;
 
-    @Column(nullable = false)
-    private String nome;
+    @Enumerated(EnumType.STRING) // ⬅️ importante para salvar "ADMIN", "PROFESSOR", ...
+    @Column(unique = true, nullable = false)
+    private RoleName nome;
 
     public Role() {
 
     }
 
-    public Role(String nome) {
+    public Role(RoleName nome) {
         this.nome = nome;
     }
 
-    public Role(long id, String nome) {
+    public Role(UUID id, RoleName nome) {
         this.id = id;
         this.nome = nome;
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getNome() {
+    public RoleName getNome() {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setNome(RoleName nome) {
         this.nome = nome;
     }
 
