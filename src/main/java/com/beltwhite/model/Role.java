@@ -20,7 +20,7 @@ public class Role {
     @Column(columnDefinition = "UUID")
     private UUID id;
 
-    @Enumerated(EnumType.STRING) // ⬅️ importante para salvar "ADMIN", "PROFESSOR", ...
+    @Enumerated(EnumType.STRING) // importante para salvar "ADMIN", "PROFESSOR", ...
     @Column(unique = true, nullable = false)
     private RoleName nome;
 

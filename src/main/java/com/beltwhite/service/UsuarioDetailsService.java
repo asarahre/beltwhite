@@ -1,5 +1,10 @@
 package com.beltwhite.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,24 +31,20 @@ public class UsuarioDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Email não encontrado"));
 
         try {
-            String[] roles = new String[] {};
-            try {
 
-                roles = usuario.getRoles()
-                        .stream()
-                        .map(r -> r.getNome()) // supondo que Role tem campo 'nome' = "ADMIN", "USER", etc.
-                        .toArray(String[]::new);
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
+            List<GrantedAuthority> authorities = usuario.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getNome().name())) // <- importante para
+                                                                                              // spring interpretar os
+                                                                                              // acessos
+                    .collect(Collectors.toList());
 
             return User.builder()
                     .username(usuario.getEmail())
                     .password(usuario.getSenha())
-                    .roles(roles) // agora pega do banco
+                    .authorities(authorities) // agora pega do banco
                     .build();
         } catch (Exception e) {
-            throw new RecursoNaoEncontradosException("erros login");
+            throw new RecursoNaoEncontradosException("erros login" + e.getMessage());
         }
 
     }
